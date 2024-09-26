@@ -1,0 +1,207 @@
+'\" t
+.\"     Title: dbus-update-activation-environment
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 09/20/2024
+.\"    Manual: User Commands
+.\"    Source: D-Bus 1.15.9
+.\"  Language: English
+.\"
+.TH "DBUS\-UPDATE\-ACTIVA" "1" "09/20/2024" "D\-Bus 1\&.15\&.9" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+dbus-update-activation-environment \- update environment used for D\-Bus session services
+.SH "SYNOPSIS"
+.HP \w'\fBdbus\-update\-activation\-environment\fR\ 'u
+\fBdbus\-update\-activation\-environment\fR [\-\-systemd] [\-\-verbose] \-\-all | \fIVAR\fR... | \fIVAR\fR=\fIVAL\fR... 
+.SH "DESCRIPTION"
+.PP
+\fBdbus\-update\-activation\-environment\fR
+updates the list of environment variables used by
+\fBdbus\-daemon \-\-session\fR
+when it activates session services without using
+\fBsystemd\fR\&.
+.PP
+With the
+\fB\-\-systemd\fR
+option, if an instance of
+\fBsystemd \-\-user\fR
+is available on D\-Bus, it also updates the list of environment variables used by
+\fBsystemd \-\-user\fR
+when it activates user services, including D\-Bus session services for which
+\fBdbus\-daemon\fR
+has been configured to delegate activation to
+\fBsystemd\fR\&. This is very similar to the
+\fBimport\-environment\fR
+command provided by
+\fBsystemctl\fR(1))\&.
+.PP
+Variables that are special to
+\fBdbus\-daemon\fR
+or
+\fBsystemd\fR
+may be set, but their values will be overridden when a service is started\&. For instance, it is not useful to add
+\fBDBUS_SESSION_BUS_ADDRESS\fR
+to
+\fBdbus\-daemon\fR\*(Aqs activation environment, although it might still be useful to add it to
+\fBsystemd\fR\*(Aqs activation environment\&.
+.SH "OPTIONS"
+.PP
+\fB\-\-all\fR
+.RS 4
+Set all environment variables present in the environment used by
+\fBdbus\-update\-activation\-environment\fR\&.
+.RE
+.PP
+\fB\-\-systemd\fR
+.RS 4
+Set environment variables for systemd user services as well as for traditional D\-Bus session services\&.
+.RE
+.PP
+\fB\-\-verbose\fR
+.RS 4
+Output messages to standard error explaining what dbus\-update\-activation\-environment is doing\&.
+.RE
+.PP
+\fIVAR\fR
+.RS 4
+If
+\fIVAR\fR
+is present in the environment of
+\fBdbus\-update\-activation\-environment\fR, set it to the same value for D\-Bus services\&. Its value must be UTF\-8 (if not, it is skipped with a warning)\&. If
+\fIVAR\fR
+is not present in the environment, this argument is silently ignored\&.
+.RE
+.PP
+\fIVAR\fR=\fIVAL\fR
+.RS 4
+Set
+\fIVAR\fR
+to
+\fIVAL\fR, which must be UTF\-8\&.
+.RE
+.SH "EXAMPLES"
+.PP
+\fBdbus\-update\-activation\-environment\fR
+is primarily designed to be used in Linux distributions\*(Aq X11 session startup scripts, in conjunction with the "user bus" design\&.
+.PP
+To propagate
+\fBDISPLAY\fR
+and
+\fBXAUTHORITY\fR
+to
+\fBdbus\-daemon\fR
+and, if present,
+\fBsystemd\fR, and propagate
+\fBDBUS_SESSION_BUS_ADDRESS\fR
+to
+\fBsystemd\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+        dbus\-update\-activation\-environment \-\-systemd \e
+            DBUS_SESSION_BUS_ADDRESS DISPLAY XAUTHORITY
+      
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+To propagate all environment variables except
+\fBXDG_SEAT\fR,
+\fBXDG_SESSION_ID\fR
+and
+\fBXDG_VTNR\fR
+to
+\fBdbus\-daemon\fR
+(and, if present,
+\fBsystemd\fR) for compatibility with legacy X11 session startup scripts:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+        # in a subshell so the variables remain set in the
+        # parent script
+        (
+          unset XDG_SEAT
+          unset XDG_SESSION_ID
+          unset XDG_VTNR
+
+          dbus\-update\-activation\-environment \-\-systemd \-\-all
+        )
+      
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.SH "EXIT STATUS"
+.PP
+\fBdbus\-update\-activation\-environment\fR
+exits with status 0 on success, EX_USAGE (64) on invalid command\-line options, EX_OSERR (71) if unable to connect to the session bus, or EX_UNAVAILABLE (69) if unable to set the environment variables\&. Other nonzero exit codes might be added in future versions\&.
+.SH "ENVIRONMENT"
+.PP
+\fBDBUS_SESSION_BUS_ADDRESS\fR,
+\fBXDG_RUNTIME_DIR\fR
+and/or
+\fBDISPLAY\fR
+are used to find the address of the session bus\&.
+.SH "LIMITATIONS"
+.PP
+\fBdbus\-daemon\fR
+does not provide a way to unset environment variables after they have been set (although
+\fBsystemd\fR
+does), so
+\fBdbus\-update\-activation\-environment\fR
+does not offer this functionality either\&.
+.PP
+POSIX does not specify the encoding of non\-ASCII environment variable names or values and allows them to contain any non\-zero byte, but neither
+\fBdbus\-daemon\fR
+nor
+\fBsystemd\fR
+supports environment variables with non\-UTF\-8 names or values\&. Accordingly,
+\fBdbus\-update\-activation\-environment\fR
+assumes that any name or value that appears to be valid UTF\-8 is intended to be UTF\-8, and ignores other names or values with a warning\&.
+.SH "BUGS"
+.PP
+Please send bug reports to the D\-Bus bug tracker or mailing list\&. See
+\m[blue]\fBhttps://www\&.freedesktop\&.org/wiki/Software/dbus/\fR\m[]\&.
+.SH "AUTHOR"
+.PP
+See
+\m[blue]\fBhttps://dbus\&.freedesktop\&.org/doc/AUTHORS\fR\m[]
+.SH "SEE ALSO"
+.PP
+\fBdbus-daemon\fR(1),
+\fBsystemd\fR(1), the
+\fBimport\-environment\fR
+command of
+\fBsystemctl\fR(1)
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2015 Collabora Ltd.
+.br
+.PP
+This man page is distributed under the same terms as dbus\-update\-activation\-environment (MIT/X11)\&. There is NO WARRANTY, to the extent permitted by law\&.
+.sp

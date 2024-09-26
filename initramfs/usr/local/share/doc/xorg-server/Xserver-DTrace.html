@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Xserver Provider for DTrace</title><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /><style xmlns="" type="text/css">/*
+ * Copyright (c) 2011 Gaetan Nadon
+ * Copyright (c) 2010, Oracle and/or its affiliates. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice (including the next
+ * paragraph) shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/*
+ * Shared stylesheet for X.Org documentation translated to HTML format
+ * http://www.sagehill.net/docbookxsl/UsingCSS.html
+ * http://www.w3schools.com/css/default.asp
+ * https://addons.mozilla.org/en-US/firefox/addon/web-developer/developers
+ * https://addons.mozilla.org/en-US/firefox/addon/font-finder/
+ */
+
+/*
+ * The sans-serif fonts are considered more legible on a computer screen
+ * http://dry.sailingissues.com/linux-equivalents-verdana-arial.html
+ *
+ */
+body {
+  font-family: "Bitstream Vera Sans", "DejaVu Sans", Tahoma, Geneva, Arial, Sans-serif;
+  /* In support of using "em" font size unit, the w3c recommended method */
+  font-size: 100%;
+}
+
+/*
+ * Selection: all elements requiring mono spaced fonts.
+ *
+ * The family names attempt to match the proportionally spaced font
+ * family names such that the same font name is used for both.
+ * We'd like to use Bitstream, for example, in both proportionally and
+ * mono spaced font text.
+ */
+.command,
+.errorcode,
+.errorname,
+.errortype,
+.filename,
+.funcsynopsis,
+.function,
+.parameter,
+.programlisting,
+.property,
+.screen,
+.structname,
+.symbol,
+.synopsis,
+.type
+{
+  font-family:  "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Courier, "Liberation Mono", Monospace;
+}
+
+/*
+ * Books have a title page, a preface, some chapters and appendices,
+ * a glossary, an index and a bibliography, in that order.
+ *
+ * An Article has no preface and no chapters. It has sections, appendices,
+ * a glossary, an index and a bibliography.
+ */
+
+/*
+ * Selection: book main title and subtitle
+ */
+div.book>div.titlepage h1.title,
+div.book>div.titlepage h2.subtitle {
+  text-align: center;
+}
+
+/*
+ * Selection: article main title and subtitle
+ */
+div.article>div.titlepage h2.title,
+div.article>div.titlepage h3.subtitle,
+div.article>div.sect1>div.titlepage h2.title,
+div.article>div.section>div.titlepage h2.title {
+  text-align: center;
+}
+
+/*
+ * Selection: various types of authors and collaborators, individuals or corporate
+ *
+ * These authors are not always contained inside an authorgroup.
+ * They can be contained inside a lot of different parent types where they might
+ * not be centered.
+ * Reducing the margin at the bottom makes a visual separation between authors
+ * We specify here the ones on the title page, others may be added based on merit.
+ */
+div.titlepage .authorgroup,
+div.titlepage .author,
+div.titlepage .collab,
+div.titlepage .corpauthor,
+div.titlepage .corpcredit,
+div.titlepage .editor,
+div.titlepage .othercredit {
+  text-align: center;
+  margin-bottom: 0.25em;
+}
+
+/*
+ * Selection: the affiliation of various types of authors and collaborators,
+ * individuals or corporate.
+ */
+div.titlepage .affiliation {
+  text-align: center;
+}
+
+/*
+ * Selection: product release information (X Version 11, Release 7)
+ *
+ * The releaseinfo element can be contained inside a lot of different parent
+ * types where it might not be centered.
+ * We specify here the one on the title page, others may be added based on merit.
+ */
+div.titlepage p.releaseinfo {
+  font-weight: bold;
+  text-align: center;
+}
+
+/*
+ * Selection: publishing date
+ */
+div.titlepage .pubdate {
+  text-align: center;
+}
+
+/*
+ * The legal notices are displayed in smaller sized fonts
+ * Justification is only supported in IE and therefore not requested.
+ *
+ */
+.legalnotice {
+  font-size: small;
+  font-style: italic;
+}
+
+/*
+ * For documentation having multiple licenses, the copyright and legalnotice
+ * elements sequence cannot instantiated multiple times.
+ * The copyright notice and license text are therefore coded inside a legalnotice
+ * element. The role attribute on the paragraph is used to allow styling of the
+ * copyright notice text which should not be italicized.
+ */
+p.multiLicensing {
+  font-style: normal;
+  font-size: medium;
+}
+
+/*
+ * Selection: book or article main ToC title
+ * A paragraph is generated for the title rather than a level 2 heading.
+ * We do not want to select chapters sub table of contents, only the main one
+ */
+div.book>div.toc>p,
+div.article>div.toc>p {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+/*
+ * Selection: major sections of a book or an article
+ *
+ * Unlike books, articles do not have a titlepage element for appendix.
+ * Using the selector "div.titlepage h2.title" would be too general.
+ */
+div.book>div.preface>div.titlepage h2.title,
+div.book>div.chapter>div.titlepage h2.title,
+div.article>div.sect1>div.titlepage h2.title,
+div.article>div.section>div.titlepage h2.title,
+div.book>div.appendix>div.titlepage h2.title,
+div.article>div.appendix h2.title,
+div.glossary>div.titlepage h2.title,
+div.index>div.titlepage h2.title,
+div.bibliography>div.titlepage h2.title {
+   /* Add a border top over the major parts, just like printed books */
+   /* The Gray color is already used for the ruler over the main ToC. */
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: Gray;
+  /* Put some space between the border and the title */
+  padding-top: 0.2em;
+  text-align: center;
+}
+
+/*
+ * A Screen is a verbatim environment for displaying text that the user might
+ * see on a computer terminal. It is often used to display the results of a command.
+ *
+ * http://www.css3.info/preview/rounded-border/
+ */
+.screen {
+  background: #e0ffff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #B0C4DE;
+  border-radius: 1.0em;
+  /* Browser's vendor properties prior to CSS 3 */
+  -moz-border-radius: 1.0em;
+  -webkit-border-radius: 1.0em;
+  -khtml-border-radius: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 1.0em;
+  padding: 0.5em;
+}
+
+/*
+ * Emphasis program listings with a light shade of gray similar to what
+ * DocBook XSL guide does: http://www.sagehill.net/docbookxsl/ProgramListings.html
+ * Found many C API docs on the web using like shades of gray.
+ */
+.programlisting {
+  background: #F4F4F4;
+  border-width: 1px;
+  border-style: solid;
+  border-color: Gray;
+  padding: 0.5em;
+}
+
+/*
+ * Emphasis functions synopsis using a darker shade of gray.
+ * Add a border such that it stands out more.
+ * Set the padding so the text does not touch the border.
+ */
+.funcsynopsis, .synopsis {
+  background: #e6e6fa;
+  border-width: 1px;
+  border-style: solid;
+  border-color: Gray;
+  clear: both;
+  margin: 0.5em;
+  padding: 0.25em;
+}
+
+/*
+ * Selection: paragraphs inside synopsis
+ *
+ * Removes the default browser margin, let the container set the padding.
+ * Paragraphs are not always used in synopsis
+ */
+.funcsynopsis p,
+.synopsis p {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Selection: variable lists, informal tables and tables
+ *
+ * Note the parameter name "variablelist.as.table" in xorg-xhtml.xsl
+ * A table with rows and columns is constructed inside div.variablelist
+ *
+ * Set the left margin so it is indented to the right
+ * Display informal tables with single line borders
+ */
+table {
+  margin-left: 0.5em;
+  border-collapse: collapse;
+}
+
+/*
+ * Selection: paragraphs inside tables
+ *
+ * Removes the default browser margin, let the container set the padding.
+ * Paragraphs are not always used in tables
+ */
+td p {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Add some space between the left and right column.
+ * The vertical alignment helps the reader associate a term
+ * with a multi-line definition.
+ */
+td, th {
+  padding-left: 1.0em;
+  padding-right: 1.0em;
+  vertical-align: top;
+}
+
+.warning {
+  border: 1px solid red;
+  background: #FFFF66;
+  padding-left: 0.5em;
+}
+</style></head><body><div class="article"><div class="titlepage"><div><div><h2 class="title"><a id="Xserver-DTrace"></a>Xserver Provider for DTrace</h2></div><div><div class="author"><h3 class="author"><span class="firstname">Alan</span> <span class="surname">Coopersmith</span></h3><div class="affiliation"><span class="orgname">Oracle Corporation<br /></span> <span class="orgdiv">Solaris Engineering<br /></span></div></div></div><div><p class="releaseinfo">X Server Version 21.1.99.1</p></div><div><p class="copyright">Copyright © 2005, 2006, 2007, 2010, 2020 Oracle and/or its affiliates.</p></div><div><div class="legalnotice"><a id="copyright"></a><p>
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+      </p><p>
+The above copyright notice and this permission notice (including the next
+paragraph) shall be included in all copies or substantial portions of the
+Software.
+      </p><p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+      </p></div></div></div><hr /></div><div class="toc"><p><strong>Table of Contents</strong></p><dl class="toc"><dt><span class="sect1"><a href="#introduction">Introduction</a></span></dt><dt><span class="sect1"><a href="#probes">Available probes</a></span></dt><dt><span class="sect1"><a href="#arguments">Data Available in Probe Arguments</a></span></dt><dt><span class="sect1"><a href="#examples">Examples</a></span></dt></dl></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction"></a>Introduction</h2></div></div></div><p>
+      This page provides details on a
+      <a class="ulink" href="http://dtrace.org/guide/chp-usdt.html" target="_top">statically defined user application tracing provider</a>
+      for the
+      <a class="ulink" href="http://dtrace.org/blogs/about/" target="_top">DTrace</a>
+      facility in <span class="productname">Solaris</span>™ 10,
+      <span class="productname">MacOS X</span>™ 10.5, and later releases.  This
+      provider instruments various points in the X server, to allow
+      tracing what client applications are up to. DTrace probes may be used
+      with <a class="ulink" href="http://sourceware.org/systemtap/" target="_top">SystemTap</a>
+      on GNU/Linux systems.
+    </p><p>
+      The provider was integrated into the X.Org code base
+      with Solaris 10 &amp; OpenSolaris support for the Xserver 1.4 release,
+      released in 2007 with X11R7.3.   Support for DTrace on MacOS X
+      was added in Xserver 1.7.
+    </p><p>
+      These probes expose the request and reply structure of the X protocol
+      between clients and the X server, so an understanding of that basic
+      nature will aid in learning how to use these probes.
+    </p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="probes"></a>Available probes</h2></div></div></div><p>
+      Due to the way User-Defined DTrace probes work, arguments to
+      these probes all bear undistinguished names of
+      <em class="parameter"><code>arg0</code></em>, <em class="parameter"><code>arg1</code></em>,
+      <em class="parameter"><code>arg2</code></em>, etc.  These tables should help you
+      determine what the real data is for each of the probe arguments.
+
+    </p><div class="table"><a id="Probes_and_their_arguments"></a><p class="title"><strong>Table 1. Probes and their arguments</strong></p><div class="table-contents"><table class="table" summary="Probes and their arguments" border="1"><colgroup><col class="probe" /><col class="desc" /><col class="arg0" /><col class="arg1" /><col class="arg2" /><col class="arg3" /><col class="arg4" /><col class="arg5" /><col class="arg6" /></colgroup><thead><tr><th>Probe name</th><th>Description</th><th>arg0</th><th>arg1</th><th>arg2</th><th>arg3</th><th>arg4</th><th>arg5</th><th>arg6</th></tr></thead><tbody><tr><td colspan="7">Request Probes</td><td class="auto-generated"> </td><td class="auto-generated"> </td></tr><tr><td>request-start</td><td>Called just before processing each client request.</td><td><em class="parameter"><code>requestName</code></em></td><td><em class="parameter"><code>requestCode</code></em></td><td><em class="parameter"><code>requestLength</code></em></td><td><em class="parameter"><code>clientId</code></em></td><td><em class="parameter"><code>requestBuffer</code></em></td><td> </td><td> </td></tr><tr><td>request-done</td><td>Called just after processing each client request.</td><td><em class="parameter"><code>requestName</code></em></td><td><em class="parameter"><code>requestCode</code></em></td><td><em class="parameter"><code>sequenceNumber</code></em></td><td><em class="parameter"><code>clientId</code></em></td><td><em class="parameter"><code>resultCode</code></em></td><td> </td><td> </td></tr><tr><td colspan="7">Event Probes</td><td class="auto-generated"> </td><td class="auto-generated"> </td></tr><tr><td>send-event</td><td>Called just before send each event to a client.</td><td><em class="parameter"><code>clientId</code></em></td><td><em class="parameter"><code>eventCode</code></em></td><td><em class="parameter"><code>eventBuffer</code></em></td><td> </td><td> </td><td> </td><td> </td></tr><tr><td colspan="7">Client Connection Probes</td><td class="auto-generated"> </td><td class="auto-generated"> </td></tr><tr><td>client-connect</td><td>Called when a new connection is opened from a client</td><td><em class="parameter"><code>clientId</code></em></td><td><em class="parameter"><code>clientFD</code></em></td><td> </td><td> </td><td> </td><td> </td><td> </td></tr><tr><td>client-auth</td><td>Called when client authenticates (normally just after connection opened)</td><td><em class="parameter"><code>clientId</code></em></td><td><em class="parameter"><code>clientAddr</code></em></td><td><em class="parameter"><code>clientPid</code></em></td><td><em class="parameter"><code>clientZoneId</code></em></td><td> </td><td> </td><td> </td></tr><tr><td>client-disconnect</td><td>Called when a client connection is closed</td><td><em class="parameter"><code>clientId</code></em></td><td> </td><td> </td><td> </td><td> </td><td> </td><td> </td></tr><tr><td colspan="7">Resource Allocation Probes</td><td class="auto-generated"> </td><td class="auto-generated"> </td></tr><tr><td>resource-alloc</td><td>Called when a new resource (pixmap, gc, colormap, etc.) is allocated</td><td><em class="parameter"><code>resourceId</code></em></td><td><em class="parameter"><code>resourceTypeId</code></em></td><td><em class="parameter"><code>resourceValue</code></em></td><td><em class="parameter"><code>resourceTypeName</code></em></td><td> </td><td> </td><td> </td></tr><tr><td>resource-free</td><td>Called when a resource is freed</td><td><em class="parameter"><code>resourceId</code></em></td><td><em class="parameter"><code>resourceTypeId</code></em></td><td><em class="parameter"><code>resourceValue</code></em></td><td><em class="parameter"><code>resourceTypeName</code></em></td><td> </td><td> </td><td> </td></tr><tr><td colspan="7">Input API probes</td><td class="auto-generated"> </td><td class="auto-generated"> </td></tr><tr><td>input-event</td><td>Called when an input event was submitted for processing</td><td><em class="parameter"><code>deviceid</code></em></td><td><em class="parameter"><code>eventtype</code></em></td><td><em class="parameter"><code>button</code></em> or
+		   <em class="parameter"><code>keycode</code></em> or
+		   <em class="parameter"><code>touchid</code></em></td><td><em class="parameter"><code>flags</code></em></td><td><em class="parameter"><code>nvalues</code></em></td><td><em class="parameter"><code>mask</code></em></td><td><em class="parameter"><code>values</code></em></td></tr></tbody></table></div></div><p><br class="table-break" />
+    </p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="arguments"></a>Data Available in Probe Arguments</h2></div></div></div><p>
+      To access data in arguments of type <span class="type">string</span>, you will need
+      to use <a class="ulink" href="http://dtrace.org/guide/chp-actsub.html#chp-actsub-copyinstr" target="_top"><code class="function">copyinstr()</code></a>.
+      To access data buffers referenced via <span class="type">uintptr_t</span>'s, you will
+      need to use <a class="ulink" href="http://dtrace.org/guide/chp-actsub.html#chp-actsub-copyin" target="_top"><code class="function">copyin()</code></a>.
+
+    </p><div class="table"><a id="Probe_Arguments"></a><p class="title"><strong>Table 2. Probe Arguments</strong></p><div class="table-contents"><table class="table" summary="Probe Arguments" border="1"><colgroup><col class="arg" /><col class="type" /><col class="desc" /></colgroup><thead><tr><th>Argument name</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td><em class="parameter"><code>clientAddr</code></em></td><td><span class="type">string</span></td><td>String representing address client connected from</td></tr><tr><td><em class="parameter"><code>clientFD</code></em></td><td><span class="type">int</span></td><td>X server's file descriptor for server side of each connection</td></tr><tr><td><em class="parameter"><code>clientId</code></em></td><td><span class="type">int</span></td><td>Unique integer identifier for each connection to the
+	      X server</td></tr><tr><td><em class="parameter"><code>clientPid</code></em></td><td><span class="type">pid_t</span></td><td>Process id of client, if connection is local
+	      (from <code class="function">getpeerucred()</code>)</td></tr><tr><td><em class="parameter"><code>clientZoneId</code></em></td><td><span class="type">zoneid_t</span></td><td>Solaris: Zone id of client, if connection is local
+	      (from <code class="function">getpeerucred()</code>)</td></tr><tr><td><em class="parameter"><code>eventBuffer</code></em></td><td><span class="type">uintptr_t</span></td><td>Pointer to buffer containing X event - decode using
+	      structures in
+	      &lt;<a class="ulink" href="https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/blob/master/include/X11/Xproto.h" target="_top"><code class="filename">X11/Xproto.h</code></a>&gt;
+	      and similar headers for each extension</td></tr><tr><td><em class="parameter"><code>eventCode</code></em></td><td><span class="type">uint8_t</span></td><td>Event number of X event</td></tr><tr><td><em class="parameter"><code>resourceId</code></em></td><td><span class="type">uint32_t</span></td><td>X resource id (XID)</td></tr><tr><td><em class="parameter"><code>resourceTypeId</code></em></td><td><span class="type">uint32_t</span></td><td>Resource type id</td></tr><tr><td><em class="parameter"><code>resourceTypeName</code></em></td><td><span class="type">string</span></td><td>String representing X resource type
+		(<code class="literal">"PIXMAP"</code>, etc.)</td></tr><tr><td><em class="parameter"><code>resourceValue</code></em></td><td><span class="type">uintptr_t</span></td><td>Pointer to data for X resource</td></tr><tr><td><em class="parameter"><code>resultCode</code></em></td><td><span class="type">int</span></td><td>Integer code representing result status of request</td></tr><tr><td><em class="parameter"><code>requestBuffer</code></em></td><td><span class="type">uintptr_t</span></td><td>Pointer to buffer containing X request - decode using
+	      structures in
+	      &lt;<a class="ulink" href="https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/blob/master/include/X11/Xproto.h" target="_top"><code class="filename">X11/Xproto.h</code></a>&gt;
+	      and similar headers for each extension</td></tr><tr><td><em class="parameter"><code>requestCode</code></em></td><td><span class="type">uint8_t</span></td><td>Request number of X request or Extension</td></tr><tr><td><em class="parameter"><code>requestName</code></em></td><td><span class="type">string</span></td><td>Name of X request or Extension</td></tr><tr><td><em class="parameter"><code>requestLength</code></em></td><td><span class="type">uint16_t</span></td><td>Length of X request</td></tr><tr><td><em class="parameter"><code>sequenceNumber</code></em></td><td><span class="type">uint32_t</span></td><td>Number of X request in in this connection</td></tr><tr><td><em class="parameter"><code>deviceid</code></em></td><td><span class="type">int</span></td><td>The device's numerical ID</td></tr><tr><td><em class="parameter"><code>eventtype</code></em></td><td><span class="type">int</span></td><td>Protocol event type</td></tr><tr><td><em class="parameter"><code>button, keycode, touchid</code></em></td><td><span class="type">uint32_t</span></td><td>The button number, keycode or touch ID</td></tr><tr><td><em class="parameter"><code>flags</code></em></td><td><span class="type">uint32_t</span></td><td>Miscellaneous event-specific server flags</td></tr><tr><td><em class="parameter"><code>nvalues</code></em></td><td><span class="type">int8_t</span></td><td>Number of bits in <em class="parameter"><code>mask</code></em> and number of elements
+		    in <em class="parameter"><code>values</code></em></td></tr><tr><td><em class="parameter"><code>mask</code></em></td><td><span class="type">uint8_t*</span></td><td>Binary mask indicating which indices in <em class="parameter"><code>values</code></em> contain
+		  valid data</td></tr><tr><td><em class="parameter"><code>values</code></em></td><td><span class="type">double*</span></td><td>Valuator values. Values for indices for which the
+		  <em class="parameter"><code>mask</code></em> is not set are undefined</td></tr></tbody></table></div></div><p><br class="table-break" />
+    </p></div><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="examples"></a>Examples</h2></div></div></div><div class="example"><a id="Counting_requests_by_request_name"></a><p class="title"><strong>Example 1. Counting requests by request name</strong></p><div class="example-contents"><p>
+	This script simply increments a counter for each different request
+	made, and when you exit the script (such as by hitting
+	<span class="keycap"><strong>Control</strong></span>+<span class="keycap"><strong>C</strong></span>) prints the counts.
+
+	</p><pre class="programlisting">
+#!/usr/sbin/dtrace -s
+
+Xserver*:::request-start
+{
+    @counts[copyinstr(arg0)] = count();
+}
+	</pre><p>
+
+	The output from a short run may appear as:
+	</p><pre class="screen">
+  QueryPointer                                                      1
+  CreatePixmap                                                      2
+  FreePixmap                                                        2
+  PutImage                                                          2
+  ChangeGC                                                         10
+  CopyArea                                                         10
+  CreateGC                                                         14
+  FreeGC                                                           14
+  RENDER                                                           28
+  SetClipRectangles                                                40
+	</pre><p>
+      </p><p>
+	This can be rewritten slightly to cache the string containing the name
+	of the request since it will be reused many times, instead of copying
+	it over and over from the kernel:
+
+	</p><pre class="programlisting">
+#!/usr/sbin/dtrace -s
+
+string Xrequest[uintptr_t];
+
+Xserver*:::request-start
+/Xrequest[arg0] == ""/
+{
+    Xrequest[arg0] = copyinstr(arg0);
+}
+
+Xserver*:::request-start
+{
+    @counts[Xrequest[arg0]] = count();
+}
+	</pre><p>
+      </p></div></div><br class="example-break" /><div class="example"><a id="Get_average_CPU_time_per_request"></a><p class="title"><strong>Example 2. Get average CPU time per request</strong></p><div class="example-contents"><p>This script records the CPU time used between the probes at
+	the start and end of each request and aggregates it per request type.
+
+	</p><pre class="programlisting">
+#!/usr/sbin/dtrace -s
+
+Xserver*:::request-start
+{
+    reqstart = vtimestamp;
+}
+
+Xserver*:::request-done
+{
+    @times[copyinstr(arg0)] = avg(vtimestamp - reqstart);
+}
+	</pre><p>
+
+	The output from a sample run might look like:
+
+	</p><pre class="screen">
+  ChangeGC                                                        889
+  MapWindow                                                       907
+  SetClipRectangles                                              1319
+  PolyPoint                                                      1413
+  PolySegment                                                    1434
+  PolyRectangle                                                  1828
+  FreeCursor                                                     1895
+  FreeGC                                                         1950
+  CreateGC                                                       2244
+  FreePixmap                                                     2246
+  GetInputFocus                                                  2249
+  TranslateCoords                                                8508
+  QueryTree                                                      8846
+  GetGeometry                                                    9948
+  CreatePixmap                                                  12111
+  AllowEvents                                                   14090
+  GrabServer                                                    14791
+  MIT-SCREEN-SAVER                                              16747
+  ConfigureWindow                                               22917
+  SetInputFocus                                                 28521
+  PutImage                                                     240841
+
+	</pre><p>
+      </p></div></div><br class="example-break" /><div class="example"><a id="Monitoring_clients_that_connect_and_disconnect"></a><p class="title"><strong>Example 3. Monitoring clients that connect and disconnect</strong></p><div class="example-contents"><p>
+	This script simply prints information about each client that
+	connects or disconnects from the server while it is running.
+	Since the provider is specified as <code class="code">Xserver$1</code> instead
+	of <code class="code">Xserver*</code> like previous examples, it won't monitor
+	all Xserver processes running on the machine, but instead expects
+	the process id of the X server to monitor to be specified as the
+	argument to the script.
+
+	</p><pre class="programlisting">
+#!/usr/sbin/dtrace -s
+
+Xserver$1:::client-connect
+{
+	printf("** Client Connect: id %d\n", arg0);
+}
+
+Xserver$1:::client-auth
+{
+	printf("** Client auth'ed: id %d =&gt; %s pid %d\n",
+		arg0, copyinstr(arg1), arg2);
+}
+
+Xserver$1:::client-disconnect
+{
+	printf("** Client Disconnect: id %d\n", arg0);
+}
+	</pre><p>
+
+	A sample run:
+
+	</p><pre class="screen">
+<code class="prompt">#</code> <strong class="userinput"><code>./foo.d 5790</code></strong>
+<code class="computeroutput">dtrace: script './foo.d' matched 4 probes
+CPU     ID                    FUNCTION:NAME
+  0  15774 CloseDownClient:client-disconnect ** Client Disconnect: id 65
+
+  2  15774 CloseDownClient:client-disconnect ** Client Disconnect: id 64
+
+  0  15773 EstablishNewConnections:client-connect ** Client Connect: id 64
+
+  0  15772            AuthAudit:client-auth ** Client auth'ed: id 64 =&gt; local host pid 2034
+
+  0  15773 EstablishNewConnections:client-connect ** Client Connect: id 65
+
+  0  15772            AuthAudit:client-auth ** Client auth'ed: id 65 =&gt; local host pid 2034
+
+  0  15774 CloseDownClient:client-disconnect ** Client Disconnect: id 64
+	  </code>
+	</pre><p>
+
+      </p></div></div><br class="example-break" /><div class="example"><a id="Monitoring_clients_creating_Pixmaps"></a><p class="title"><strong>Example 4. Monitoring clients creating Pixmaps</strong></p><div class="example-contents"><p>
+	This script can be used to determine which clients are creating
+	pixmaps in the X server, printing information about each client
+	as it connects to help trace it back to the program on the other
+	end of the X connection.
+
+	</p><pre class="programlisting">
+#!/usr/sbin/dtrace -qs
+
+string Xrequest[uintptr_t];
+string Xrestype[uintptr_t];
+
+Xserver$1:::request-start
+/Xrequest[arg0] == ""/
+{
+	Xrequest[arg0] = copyinstr(arg0);
+}
+
+Xserver$1:::resource-alloc
+/arg3 != 0 &amp;&amp; Xrestype[arg3] == ""/
+{
+	Xrestype[arg3] = copyinstr(arg3);
+}
+
+
+Xserver$1:::request-start
+/Xrequest[arg0] == "X_CreatePixmap"/
+{
+	printf("-&gt; %s: client %d\n", Xrequest[arg0], arg3);
+}
+
+Xserver$1:::request-done
+/Xrequest[arg0] == "X_CreatePixmap"/
+{
+	printf("&lt;- %s: client %d\n", Xrequest[arg0], arg3);
+}
+
+Xserver$1:::resource-alloc
+/Xrestype[arg3] == "PIXMAP"/
+{
+	printf("** Pixmap alloc: %08x\n", arg0);
+}
+
+
+Xserver$1:::resource-free
+/Xrestype[arg3] == "PIXMAP"/
+{
+	printf("** Pixmap free:  %08x\n", arg0);
+}
+
+Xserver$1:::client-connect
+{
+	printf("** Client Connect: id %d\n", arg0);
+}
+
+Xserver$1:::client-auth
+{
+	printf("** Client auth'ed: id %d =&gt; %s pid %d\n",
+		arg0, copyinstr(arg1), arg2);
+}
+
+Xserver$1:::client-disconnect
+{
+	printf("** Client Disconnect: id %d\n", arg0);
+}
+	</pre><p>
+
+	Sample output from a run of this script:
+	</p><pre class="screen"><code class="computeroutput">
+** Client Connect: id 17
+** Client auth'ed: id 17 =&gt; local host pid 20273
+-&gt; X_CreatePixmap: client 17
+** Pixmap alloc: 02200009
+&lt;- X_CreatePixmap: client 17
+-&gt; X_CreatePixmap: client 15
+** Pixmap alloc: 01e00180
+&lt;- X_CreatePixmap: client 15
+-&gt; X_CreatePixmap: client 15
+** Pixmap alloc: 01e00181
+&lt;- X_CreatePixmap: client 15
+-&gt; X_CreatePixmap: client 14
+** Pixmap alloc: 01c004c8
+&lt;- X_CreatePixmap: client 14
+** Pixmap free:  02200009
+** Client Disconnect: id 17
+** Pixmap free:  01e00180
+** Pixmap free:  01e00181
+	  </code></pre><p>
+
+      </p></div></div><br class="example-break" /><div class="example"><a id="Input_API_monitoring_with_systemtap"></a><p class="title"><strong>Example 5. Input API monitoring with SystemTap</strong></p><div class="example-contents"><p>
+	This script can be used to monitor events submitted by drivers to
+	the server for enqueuing. Due to the integration of the input API
+	probes, some server-enqueued events will show up too.
+	</p><pre class="programlisting">
+  # Compile+run with
+  #       stap -g xorg.stp /usr/bin/Xorg
+  #
+
+
+  function print_valuators:string(nvaluators:long, mask_in:long, valuators_in:long) %{
+	  int i;
+	  unsigned char *mask = (unsigned char*)THIS-&gt;mask_in;
+	  double *valuators = (double*)THIS-&gt;valuators_in;
+	  char str[128] = {0};
+	  char *s = str;
+
+  #define BitIsSet(ptr, bit) (((unsigned char*)(ptr))[(bit)&gt;&gt;3] &amp; (1 &lt;&lt; ((bit) &amp; 7)))
+
+	  s += sprintf(s, "nval: %d ::", (int)THIS-&gt;nvaluators);
+	  for (i = 0; i &lt; THIS-&gt;nvaluators; i++)
+	  {
+		  s += sprintf(s, "	%d: ", i);
+		  if (BitIsSet(mask, i))
+		      s += sprintf(s, "%d", (int)valuators[i]);
+	  }
+
+	  sprintf(THIS-&gt;__retvalue, "%s", str);
+  %}
+
+  probe process(@1).mark("input__event")
+  {
+      deviceid = $arg1
+      type = $arg2
+      detail = $arg3
+      flags = $arg4
+      nvaluators = $arg5
+
+      str = print_valuators(nvaluators, $arg6, $arg7)
+      printf("Event: device %d type %d detail %d flags %#x %s\n",
+	      deviceid, type, detail, flags, str);
+  }
+	</pre><p>
+
+	Sample output from a run of this script:
+	</p><pre class="screen"><code class="computeroutput">
+Event: device 13 type 4 detail 1 flags 0x0 nval: 0 ::
+Event: device 13 type 6 detail 0 flags 0xa nval: 1 ::	0: 1
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 2	1: -1
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 2	1: -1
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 4	1: -3
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 3	1: -3
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 3	1: -2
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 2	1: -2
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 2	1: -2
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 2	1: -2
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 	1: -1
+Event: device 13 type 6 detail 0 flags 0xa nval: 2 ::	0: 	1: -1
+Event: device 13 type 5 detail 1 flags 0x0 nval: 0 ::
+	</code></pre><p>
+
+      </p></div></div><br class="example-break" /></div></div></body></html>

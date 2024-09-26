@@ -2,44 +2,97 @@
 set -e
 
 sudo apt update -y
-sudo apt install -y build-essential gcc g++ make libncurses-dev bison flex libssl-dev libelf-dev bc autoconf automake libtool git qemu-system-x86 cpio gzip
+sudo apt install -y build-essential gcc g++ make libncurses-dev bison flex libssl-dev libelf-dev bc autoconf automake libtool git qemu-system-x86 cpio gzip gawk texinfo sudo
+sudo apt install -y libcap-dev libarchive-dev libcurl4-openssl-dev libpolkit-agent-1-dev libfuse-dev libostree-dev libjson-glib-dev libappstream-dev libgpgme-dev
+sudo apt install -y x11proto-core-dev libxkbfile-dev libxfont-dev libxcvt-dev libgl1-mesa-dri mesa-common-dev libdrm-dev xorg-dev
 
-git clone https://github.com/torvalds/linux
-git clone https://github.com/bminor/glibc
-git clone https://github.com/mirror/busybox
+# ---------------------
+# Pull Source Code
+# ---------------------
+
+#git clone https://github.com/torvalds/linux
+#git clone https://github.com/bminor/glibc
+#git clone https://github.com/mirror/busybox
+#git clone https://github.com/flatpak/flatpak
+#git clone https://github.com/kennylevinsen/seatd
+#git clone https://github.com/eudev-project/eudev
+#git clone https://gitlab.freedesktop.org/xorg/app/xinit
+#git clone https://gitlab.freedesktop.org/xorg/driver/xf86-video-modesetting
+#git clone https://gitlab.freedesktop.org/xorg/driver/xf86-input-evdev
+#git clone https://gitlab.freedesktop.org/xorg/driver/xf86-input-libinput
+
+# ---------------------
+# Build from Source
+# ---------------------
 
 # Create a directory for the initial ramdisk
 rm -rf initramfs/*
-mkdir -p initramfs/{proc,sys,tmp,lib,dev,etc/network,usr/share/udhcpc}
+mkdir -p initramfs/{proc,sys,tmp,lib,dev,home,etc/network,usr/share/udhcpc}
 
 # Step 1: Compile Linux Kernel
 echo "Compiling Linux Kernel..."
-cd ./linux
-    make defconfig
-    make -j$(nproc) bzImage
-cd ..
+#cd ./linux
+#    make defconfig
+#    make -j$(nproc) bzImage
+#cd ..
 
 # Step 2: Compile glibc
-cd glibc
-    mkdir -p build
-    cd build
-        ../configure --prefix=/usr --disable-multilib
-        make -j$(nproc)
-        make DESTDIR=$(pwd)/install install
-    cd ..
-cd ..
+echo "Compiling glibc..."
+#cd glibc
+#    mkdir -p build
+#    cd build
+#        ../configure --prefix=/usr --disable-multilib
+#        make -j$(nproc)
+#        make DESTDIR=$(pwd)/install install
+#    cd ..
+#cd ..
 
 # Step 3: Compile BusyBox with networking tools
 echo "Compiling BusyBox..."
-cd ./busybox
-    make defconfig
-    make -j$(nproc)
-    make install
+#cd ./busybox
+#    make defconfig
+#    make -j$(nproc)
+#    make install
+#cd ..
+
+cd ./flatpak
+    #meson setup builddir
+    cd builddir
+        #meson compile
+        mkdir -p install
+        meson install --destdir install
+    cd ..
 cd ..
 
+#echo "Compiling eudev..."
+#cd eudev
+#    mkdir -p build
+#    cd build
+#        ../configure
+#        make -j$(nproc)
+#        make DESTDIR=$(pwd)/install install
+#    cd ..
+#cd ..
+
+#echo "Compiling xinit..."
+#cd xinit
+#   ./autogen.sh
+#    mkdir -p build
+#    cd build
+#        ../configure
+#        make -j$(nproc)
+#        make DESTDIR=$(pwd)/install install
+#    cd ..
+#cd ..
+
 # Copy binaries
+cp linux/arch/x86/boot/bzImage bzImage
 cp -a glibc/build/install/* initramfs/
 cp -a busybox/_install/* initramfs/
+cp -a flatpak/builddir/install/* initramfs/
+cp -a eudev/build/install/* initramfs/
+cp -a xserver/builddir/install/* initramfs/
+cp -a xinit/build/install/* initramfs/
 
 # Create necessary device nodes
 cd initramfs
@@ -58,29 +111,41 @@ cd initramfs
     ln -s /lib64/libc.so.6 lib/libc.so.6
 cd ..
 
+mkdir -p initramfs/etc/X11
+mkdir -p initramfs/var/local/log
+cat > initramfs/etc/X11/xorg.conf << 'EOF'
+Section "Device"
+    Identifier "Card0"
+    Driver "modesetting"
+    Option "AccelMethod" "glamor"
+EndSection
+
+Section "Screen"
+    Identifier "Screen0"
+    Device "Card0"
+EndSection
+EOF
+
 # Create init script with networking setup
-cat > initramfs/init << EOF
+cat > initramfs/init << 'EOF'
 #!/bin/sh
 
-# Set up initial configuration
-mount -t proc proc /proc &
-mount -t sysfs sysfs /sys &
-mount -t devtmpfs devtmpfs /dev &
+# Mount filesystems
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
 
-# Init messages
-clear
-echo "Welcome to AshDOS!"
-date
-free -h | grep Mem
-echo ""
+# Initialize networking
+ifconfig lo up
+ifconfig eth0 up
+udhcpc -i eth0
 
-# Start task
-setsid cttyhack sh
-exec /bin/sh
-poweroff -f
+/usr/local/bin/X
+/bin/sh
 EOF
 chmod +x initramfs/init
 
+# Setup DNS
 cat > initramfs/etc/resolv.conf << EOF
 nameserver 208.67.222.123
 nameserver 208.67.220.123
@@ -98,11 +163,4 @@ Version: 2.40-2
 EOF
 
 # Create the initramfs image
-cd initramfs
-    find . | cpio -o -H newc | gzip > ../initramfs.img
-cd ..
-
-cp linux/arch/x86/boot/bzImage bzImage
-
-# Run QEMU with network options
-qemu-system-x86_64 -m 2G -kernel bzImage -initrd initramfs.img -append "console=ttyS0 init=/init quiet loglevel=3" -nographic -net nic -net user
+./rebuild-initramfs.sh

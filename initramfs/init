@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Mount filesystems
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mount -t tmpfs tmpfs /run
+
+# Initialize networking
+ifconfig lo up
+ifconfig eth0 up
+udhcpc -i eth0
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+Xorg &
+
+# Keep the shell open
+/bin/sh

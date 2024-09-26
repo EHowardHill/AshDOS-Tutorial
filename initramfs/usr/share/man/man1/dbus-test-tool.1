@@ -1,0 +1,223 @@
+'\" t
+.\"     Title: dbus-test-tool
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
+.\"      Date: 09/20/2024
+.\"    Manual: User Commands
+.\"    Source: D-Bus 1.15.9
+.\"  Language: English
+.\"
+.TH "DBUS\-TEST\-TOOL" "1" "09/20/2024" "D\-Bus 1\&.15\&.9" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+dbus-test-tool \- D\-Bus traffic generator and test tool
+.SH "SYNOPSIS"
+.HP \w'\fBdbus\-test\-tool\fR\ 'u
+\fBdbus\-test\-tool\fR black\-hole [\-\-session | \-\-system] [\-\-name=\fINAME\fR] [\-\-no\-read]
+.HP \w'\fBdbus\-test\-tool\fR\ 'u
+\fBdbus\-test\-tool\fR echo [\-\-session | \-\-system] [\-\-name=\fINAME\fR] [\-\-sleep\-ms=\fIMS\fR]
+.HP \w'\fBdbus\-test\-tool\fR\ 'u
+\fBdbus\-test\-tool\fR spam [\-\-session | \-\-system] [\-\-dest=\fINAME\fR] [\-\-count=\fIN\fR] [\-\-flood] [\-\-ignore\-errors] [\-\-messages\-per\-conn=\fIN\fR] [\-\-no\-reply] [\-\-queue=\fIN\fR] [\-\-seed=\fISEED\fR] [\-\-string | \-\-bytes | \-\-empty] [\-\-payload=\fIS\fR | \-\-stdin | \-\-message\-stdin | \-\-random\-size]
+.SH "DESCRIPTION"
+.PP
+\fBdbus\-test\-tool\fR
+is a multi\-purpose tool for debugging and profiling D\-Bus\&.
+.PP
+\fBdbus\-test\-tool black\-hole\fR
+connects to D\-Bus, optionally requests a name, then does not reply to messages\&. It normally reads and discards messages from its D\-Bus socket, but can be configured to sleep forever without reading\&.
+.PP
+\fBdbus\-test\-tool echo\fR
+connects to D\-Bus, optionally requests a name, then sends back an empty reply to every method call, after an optional delay\&.
+.PP
+\fBdbus\-test\-tool spam\fR
+connects to D\-Bus and makes repeated method calls, normally named
+com\&.example\&.Spam\&.
+.SH "OPTIONS"
+.SS "Common options"
+.PP
+\fB\-\-session\fR
+.RS 4
+Connect to the session bus\&. This is the default\&.
+.RE
+.PP
+\fB\-\-system\fR
+.RS 4
+Connect to the system bus\&.
+.RE
+.SS "black\-hole mode"
+.PP
+\fB\-\-name=\fR\fINAME\fR
+.RS 4
+Before proceeding, request ownership of the well\-known bus name
+\fINAME\fR, for example
+com\&.example\&.NoReply\&. By default, no name is requested, and the tool can only be addressed by a unique bus name such as
+:1\&.23\&.
+.RE
+.PP
+\fB\-\-no\-read\fR
+.RS 4
+Do not read from the D\-Bus socket\&.
+.RE
+.SS "echo mode"
+.PP
+\fB\-\-name=\fR\fINAME\fR
+.RS 4
+Before proceeding, request ownership of the well\-known bus name
+\fINAME\fR, for example
+com\&.example\&.Echo\&. By default, no name is requested, and the tool can only be addressed by a unique bus name such as
+:1\&.23\&.
+.RE
+.PP
+\fB\-\-sleep\-ms=\fR\fIMS\fR
+.RS 4
+Block for
+\fIMS\fR
+milliseconds before replying to a method call\&.
+.RE
+.SS "spam mode"
+.PP
+\fB\-\-dest=\fR\fINAME\fR
+.RS 4
+Send method calls to the well\-known or unique bus name
+\fINAME\fR\&. The default is the dbus\-daemon,
+org\&.freedesktop\&.DBus\&.
+.RE
+.PP
+\fB\-\-count=\fR\fIN\fR
+.RS 4
+Send
+\fIN\fR
+method calls in total\&. The default is 1\&.
+.RE
+.PP
+\fB\-\-queue=\fR\fIN\fR
+.RS 4
+Send
+\fIN\fR
+method calls before waiting for any replies, then send one new call per reply received, keeping
+\fIN\fR
+method calls "in flight" at all times until the number of messages specified with the
+\fB\-\-count\fR
+option have been sent\&. The default is 1, unless
+\fB\-\-flood\fR
+is used\&.
+.RE
+.PP
+\fB\-\-flood\fR
+.RS 4
+Send all messages without waiting for a reply, equivalent to
+\fB\-\-queue\fR
+with an arbitrarily large
+\fIN\fR\&.
+.RE
+.PP
+\fB\-\-no\-reply\fR
+.RS 4
+Set the "no reply desired" flag on the messages\&. This implies
+\fB\-\-flood\fR, since it disables the replies that would be used for a finite
+\fB\-\-queue\fR
+length\&.
+.RE
+.PP
+\fB\-\-messages\-per\-conn=\fR\fIN\fR
+.RS 4
+If given, send
+\fIN\fR
+method calls on the same connection, then disconnect and reconnect\&. The default is to use the same connection for all method calls\&.
+.RE
+.PP
+\fB\-\-string\fR
+.RS 4
+The payload of each message is a UTF\-8 string\&. This is the default\&. The actual string used is given by the
+\fB\-\-payload\fR
+or
+\fB\-\-stdin\fR
+option, defaulting to "hello, world!"\&.
+.RE
+.PP
+\fB\-\-bytes\fR
+.RS 4
+The payload of each message is a byte\-array\&. The actual bytes used are given by the
+\fB\-\-payload\fR
+or
+\fB\-\-stdin\fR
+option, defaulting to the ASCII encoding of "hello, world!"\&.
+.RE
+.PP
+\fB\-\-empty\fR
+.RS 4
+The messages have no payload\&.
+.RE
+.PP
+\fB\-\-payload=\fR\fIS\fR
+.RS 4
+Use
+\fIS\fR
+as the
+\fB\-\-string\fR
+or
+\fB\-\-bytes\fR
+in the messages\&. The default is "hello, world!"\&.
+.RE
+.PP
+\fB\-\-stdin\fR
+.RS 4
+Read from standard input until end\-of\-file is reached, and use that as the
+\fB\-\-string\fR
+or
+\fB\-\-bytes\fR
+in the messages\&.
+.RE
+.PP
+\fB\-\-message\-stdin\fR
+.RS 4
+Read a complete binary D\-Bus method call message from standard input, and use that for each method call\&.
+.RE
+.PP
+\fB\-\-random\-size\fR
+.RS 4
+Read whitespace\-separated ASCII decimal numbers from standard input, choose one at random for each message, and send a message whose payload is a string of that length\&.
+.RE
+.PP
+\fB\-\-seed=\fR\fISEED\fR
+.RS 4
+Use
+\fISEED\fR
+as the seed for the pseudorandom number generator, to have somewhat repeatable sequences of random messages\&.
+.RE
+.SH "BUGS"
+.PP
+Please send bug reports to the D\-Bus bug tracker or mailing list\&. See
+\m[blue]\fBhttps://www\&.freedesktop\&.org/wiki/Software/dbus/\fR\m[]\&.
+.SH "AUTHOR"
+.PP
+See
+\m[blue]\fBhttps://dbus\&.freedesktop\&.org/doc/AUTHORS\fR\m[]
+.SH "SEE ALSO"
+.PP
+\fBdbus-send\fR(1)
+.SH "COPYRIGHT"
+.br
+Copyright \(co 2015 Collabora Ltd.
+.br
+.PP
+This man page is distributed under the same terms as dbus\-test\-tool (GPL\-2+)\&. There is NO WARRANTY, to the extent permitted by law\&.
+.sp
