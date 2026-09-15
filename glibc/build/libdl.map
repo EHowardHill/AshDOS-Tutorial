@@ -1,0 +1,19 @@
+GLIBC_2.2.5 {
+  global:
+    __libdl_version_placeholder;
+    __libdl_version_placeholder;
+  local:
+    *;
+};
+GLIBC_2.3.3 {
+  global:
+    __libdl_version_placeholder;
+  local:
+    *;
+} GLIBC_2.2.5;
+GLIBC_2.3.4 {
+  global:
+    __libdl_version_placeholder;
+  local:
+    *;
+} GLIBC_2.3.3;

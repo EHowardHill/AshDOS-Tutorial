@@ -1,0 +1,57 @@
+GLIBC_2.2.5 {
+  global:
+    __libc_stack_end;
+    _dl_mcount;
+    _r_debug;
+  local:
+    *;
+};
+GLIBC_2.3 {
+  global:
+    __tls_get_addr;
+  local:
+    *;
+} GLIBC_2.2.5;
+GLIBC_2.4 {
+  global:
+    __stack_chk_guard;
+  local:
+    *;
+} GLIBC_2.3;
+GLIBC_2.34 {
+  global:
+    __rtld_version_placeholder;
+  local:
+    *;
+} GLIBC_2.4;
+GLIBC_2.35 {
+  global:
+    __rseq_flags;
+    __rseq_offset;
+    __rseq_size;
+  local:
+    *;
+} GLIBC_2.34;
+GLIBC_PRIVATE {
+  global:
+    __nptl_initial_report_events;
+    __nptl_set_robust_list_avail;
+    __libc_enable_secure;
+    __nptl_change_stack_perm;
+    __pointer_chk_guard;
+    __tunable_get_val;
+    __tunable_is_initialized;
+    _dl_allocate_tls; _dl_allocate_tls_init;
+    _dl_argv; _dl_find_dso_for_object; _dl_get_tls_static_info;
+    _dl_audit_symbind_alt; _dl_audit_preinit;
+    _dl_deallocate_tls; _dl_make_stack_executable;
+    _dl_debug_state;
+    _dl_exception_create; _dl_exception_create_format; _dl_exception_free;
+    _dl_rtld_di_serinfo; _dl_starting_up; _dl_fatal_printf;
+    _dl_signal_error;
+    _dl_signal_exception; _dl_catch_exception;
+    _dl_x86_get_cpu_features;
+    _rtld_global; _rtld_global_ro;
+  local:
+    *;
+} GLIBC_2.35;
